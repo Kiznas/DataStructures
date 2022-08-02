@@ -1,20 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections;
+using System.Linq;
 
 namespace DataStructuresLibrary
 {
-    public class MyArrayList : IMyList
+    public class MyArrayList<T> where T : IMyList, IComparable<T>
     {
         private const int DefaultSize = 4;
         private const double Coef = 1.5;
         private int _count;
-        private int[] _array;
+        private T[] _array;
 
         public int Capacity => _array.Length;
         public int Length => _count;
 
-        public int this[int index]
+        public T this[int index]
         {
             get
             {
@@ -35,10 +36,10 @@ namespace DataStructuresLibrary
         public MyArrayList(int size)
         {
             size = size > DefaultSize ? (int)(size * Coef) : DefaultSize;
-            _array = new int[size];
+            _array = new T[size];
         }
 
-        public MyArrayList(int[] array)
+        public MyArrayList(T[] array)
         {
             if (array == null)
             {
@@ -46,7 +47,7 @@ namespace DataStructuresLibrary
             }
 
             int size = array.Length > DefaultSize ? (int)(array.Length * Coef) : DefaultSize;
-            _array = new int[size];
+            _array = new T[size];
 
             for (int i = 0; i < array.Length; i++)
             {
@@ -56,9 +57,9 @@ namespace DataStructuresLibrary
             _count = array.Length;
         }
 
-        public int[] ToArray()
+        public T[] ToArray()
         {
-            int[] result = new int[Length];
+            T[] result = new T[Length];
 
             for (int i = 0; i < result.Length; i++)
             {
@@ -68,20 +69,20 @@ namespace DataStructuresLibrary
             return result;
         }
 
-        public void AddBack(int itemToAdd)
+        public void AddBack(T itemToAdd)
         {
             AddByIndex(_count, itemToAdd);
         }
 
-        public void AddFront(int itemToAdd)
+        public void AddFront(T itemToAdd)
         {
             AddByIndex(0, itemToAdd);
         }
 
-        public void AddByIndex(int index, int itemToAdd)
+        public void AddByIndex(int index, T itemToAdd)
         {
             {
-                int[] newArray = new int[_array.Length];
+                T[] newArray = new T[_array.Length];
 
                 for (int i = 0; i < index; i++)
                 {
@@ -99,19 +100,19 @@ namespace DataStructuresLibrary
             }
         }
 
-        public int RemoveBack()
+        public T RemoveBack()
         {
             return RemoveByIndex(_count - 1);
         }
 
-        public int RemoveFront()
+        public T RemoveFront()
         {
             return RemoveByIndex(0);
         }
 
-        public int RemoveByIndex(int index)
+        public T RemoveByIndex(int index)
         {
-            int[] newArray = new int[_array.Length];
+            T[] newArray = new T[_array.Length];
 
             for (int i = 0; i < index; i++)
             {
@@ -123,27 +124,27 @@ namespace DataStructuresLibrary
                 newArray[i] = _array[i + 1];
             }
 
-            int deletedNumber = _array[index];
+            T deletedNumber = _array[index];
             _array = newArray;
             _count--;
             return deletedNumber;
         }
 
-        public int[] RemoveNValuesBack(int n)
+        public T[] RemoveNValuesBack(int n)
         {
             return RemoveNValuesByIndex(_count - n , n);
         }
 
-        public int[] RemoveNValuesFront(int n)
+        public T[] RemoveNValuesFront(int n)
         {
             return RemoveNValuesByIndex(0, n);
         }
 
-        public int[] RemoveNValuesByIndex(int index, int n)
+        public T[] RemoveNValuesByIndex(int index, int n)
         {
             int localCount = 0;
-            int[] newArray = new int[_array.Length];
-            int[] deletedNumbers = new int[n];
+            T[] newArray = new T[_array.Length];
+            T[] deletedNumbers = new T[n];
             do
             {
                 if (n > 0)
@@ -171,13 +172,13 @@ namespace DataStructuresLibrary
             return deletedNumbers;
         }
 
-        public int IndexOf(int element)
+        public int IndexOf(T element)
         {
             int result = -1;
 
             for (int i = 0; i < _array.Length; i++)
             {
-                if (_array[i] == element)
+                if (_array[i].CompareTo(element) == 0)
                 {
                     result = i;
                     break;
@@ -190,7 +191,7 @@ namespace DataStructuresLibrary
         public void Reverse()
         {
             int count = 1;
-            int[] newArray = new int[_array.Length];
+            T[] newArray = new T[_array.Length];
 
             for (int i = 0; i < _count; i++)
             {
@@ -200,14 +201,14 @@ namespace DataStructuresLibrary
             _array = newArray;
         }
 
-        public int Max()
+        public T Max()
         {
             int maxIndex = 0;
-            int maxElement;
+            T maxElement;
 
             for (int i = 1; i < _count; i++)
             {
-                if (_array[i] > _array[maxIndex])
+                if (_array[i].CompareTo(_array[maxIndex]) == 1)
                 {
                     maxIndex = i;
                 }
@@ -217,14 +218,14 @@ namespace DataStructuresLibrary
             return maxElement;
         }
 
-        public int Min()
+        public T Min()
         {
             int minIndex = 0;
-            int minElement;
+            T minElement;
 
             for (int i = 1; i < _count; i++)
             {
-                if (_array[i] < _array[minIndex])
+                if (_array[i].CompareTo(_array[minIndex]) == -1)
                 {
                     minIndex = i;
                 }
@@ -239,7 +240,7 @@ namespace DataStructuresLibrary
 
             for (int i = 1; i < _count; i++)
             {
-                if (_array[i] > _array[maxIndex])
+                if (_array[i].CompareTo(_array[maxIndex]) == 1)
                 {
                     maxIndex = i;
                 }
@@ -254,7 +255,7 @@ namespace DataStructuresLibrary
 
             for (int i = 1; i < _count; i++)
             {
-                if (_array[i] < _array[minIndex])
+                if (_array[i].CompareTo(_array[minIndex]) == -1)
                 {
                     minIndex = i;
                 }
@@ -273,7 +274,7 @@ namespace DataStructuresLibrary
 
                     for (int j = i + 1; j < _count; j++)
                     {
-                        if (_array[j] < _array[minIndex])
+                        if (_array[i].CompareTo(_array[minIndex]) == -1)
                         {
                             minIndex = j;
                         }
@@ -293,7 +294,7 @@ namespace DataStructuresLibrary
 
                     for (int j = i + 1; j < _count; j++)
                     {
-                        if (_array[j] > _array[maxIndex])
+                        if (_array[i].CompareTo(_array[maxIndex]) == 1)
                         {
                             maxIndex = j;
                         }
@@ -307,13 +308,13 @@ namespace DataStructuresLibrary
             }
         }
 
-        public int RemoveByValue(int value)
+        public int RemoveByValue(T value)
         {
-            int[] newArray = new int[_array.Length];
+            T[] newArray = new T[_array.Length];
             int indexOfElement = 0;
             for (int i = 0; i < _count; i++)
             {
-                if (_array[i] == value)
+                if (_array[i].CompareTo(value) == 0)
                 {
                     indexOfElement = i;
 
@@ -339,14 +340,14 @@ namespace DataStructuresLibrary
             return indexOfElement;
         }
 
-        public int RemoveByValueAll(int value)
+        public int RemoveByValueAll(T value)
         {
-            int[] newArray = new int[_array.Length];
+            T[] newArray = new T[_array.Length];
             int indexOfElement;
             int countOfElements = 0;
             for (int i = 0; i < _count; i++)
             {
-                if (_array[i] == value)
+                if (_array[i].CompareTo(value) == 0)
                 {
                     indexOfElement = i;
 
@@ -365,7 +366,7 @@ namespace DataStructuresLibrary
                     i--;
                     countOfElements++;
                 }
-                else if (_array[0] == value)
+                else if (_array[0].CompareTo(value) == 0)
                 {
                     countOfElements++;
                     break;
@@ -378,27 +379,27 @@ namespace DataStructuresLibrary
             return countOfElements;
         }
 
-        public void AddFront(IEnumerable<int> items)
+        public void AddFront(IEnumerable<T> items)
         {
             AddByIndex(0, items);
         }
 
-        public void AddBack(IEnumerable<int> items)
+        public void AddBack(IEnumerable<T> items)
         {
             AddByIndex(_count, items);
             
         }
 
-        public void AddByIndex(int index, IEnumerable<int> items)
+        public void AddByIndex(int index, IEnumerable<T> items)
         {
             int localCount = 0;
 
-            foreach (int item in items)
+            foreach (T item in items)
             {
                 localCount++;
             }
 
-            int[] newArray2 = new int[_array.Length + localCount];
+            T[] newArray2 = new T[_array.Length + localCount];
             int i = 0;
 
             for (int j = 0; j < index; j++)
@@ -407,7 +408,7 @@ namespace DataStructuresLibrary
                 i++;
             }
 
-            foreach (int item in items)
+            foreach (T item in items)
             {
                 newArray2[i++] = item;
                 _count++;
@@ -422,15 +423,15 @@ namespace DataStructuresLibrary
             _array = newArray2;
         }
 
-        private static (int, int) Swap(ref int a, ref int b)
+        private static (T, T) Swap(ref T a, ref T b)
         {
-            int temp = a;
+            T temp = a;
             a = b;
             b = temp;
             return (a, b);
         }
 
-        public IEnumerator<int> GetEnumerator()
+        public IEnumerator<T> GetEnumerator()
         {
             for (int i = 0; i < Length; i++)
             {
@@ -438,9 +439,9 @@ namespace DataStructuresLibrary
             }
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+        //IEnumerator IEnumerable.GetEnumerator()
+        //{
+        //    return GetEnumerator();
+        //}
     }
 }

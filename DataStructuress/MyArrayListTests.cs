@@ -1,18 +1,19 @@
 using DataStructuresLibrary;
 using NUnit.Framework;
 using System;
+using System.Linq;
 
 namespace DataStructures.Tests
 {
-    public class MyArrayListTests
+    public class MyArrayListTests<T> where T : IComparable<T>
     {
         [TestCase(new[] { 1, 2, 3, 4, 5 }, 10, new[] { 1, 2, 3, 4, 5, 10 })]
         [TestCase(new[] { 1, 2, 3, 4, 5 }, 0, new[] { 1, 2, 3, 4, 5, 0 })]
         [TestCase(new[] { 1, 2, 3, 4, 5 }, 23212, new[] { 1, 2, 3, 4, 5, 23212 })]
         [TestCase(new[] { 1, 2, 3, 4, 5 }, -123, new[] { 1, 2, 3, 4, 5, -123 })]
-        public void AddBack_WhenValueAdded_ShouldReturnNewArrayWithValueInBack(int[] sourceArray, int valueToAdd, int[] expectedArray)
+        public void AddBack_WhenValueAdded_ShouldReturnNewArrayWithValueInBack(T[] sourceArray, T valueToAdd, T[] expectedArray)
         {
-            var myArrayList = new MyArrayList(sourceArray);
+            MyArrayList<T> myArrayList = new MyArrayList<T>(sourceArray);
 
             myArrayList.AddBack(valueToAdd);
 
@@ -71,7 +72,7 @@ namespace DataStructures.Tests
 
             myArrayList.AddByIndex(index, valueToAdd);
 
-            CollectionAssert.AreEqual(expectedArray, myArrayList.ToArray());
+            CollectionAssert.AreEqual(expectedArray, myArrayList);
         }
 
         [TestCase(new[] { 1, 2, 3, 4, 5 }, new[] { 1, 2, 3, 4 })]
@@ -473,7 +474,7 @@ namespace DataStructures.Tests
         [TestCase(new[] { 1, 6, 3, 4, 1 }, 5)]
         [TestCase(new[] { 1, 6, 3, 4, 1 }, -10)]
         public void IndexerGet_WhenInvalidIndex_ShouldThrowIndexOutOfRange
-            (int[] sourceArray, int index)
+            (T[] sourceArray, int index)
         {
             IMyList myList = new MyArrayList(sourceArray);
 
