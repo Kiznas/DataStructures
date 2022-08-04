@@ -5,15 +5,27 @@ using System.Linq;
 
 namespace DataStructures.Tests
 {
-    public class MyArrayListTests<T> where T : IComparable<T>
+    public class ArrayListTest : MyArrayListTests<MyArrayList<int>>
     {
+        public override IMyList<int> CreateList(int[] sourceArray)
+        {
+            return new MyArrayList<int>(sourceArray);
+        }
+    }
+    
+
+    public abstract class MyArrayListTests<T> where T : IMyList<int>
+    {
+
+        public abstract IMyList<int> CreateList(int[] sourceArray);
+
         [TestCase(new[] { 1, 2, 3, 4, 5 }, 10, new[] { 1, 2, 3, 4, 5, 10 })]
         [TestCase(new[] { 1, 2, 3, 4, 5 }, 0, new[] { 1, 2, 3, 4, 5, 0 })]
         [TestCase(new[] { 1, 2, 3, 4, 5 }, 23212, new[] { 1, 2, 3, 4, 5, 23212 })]
         [TestCase(new[] { 1, 2, 3, 4, 5 }, -123, new[] { 1, 2, 3, 4, 5, -123 })]
-        public void AddBack_WhenValueAdded_ShouldReturnNewArrayWithValueInBack(T[] sourceArray, T valueToAdd, T[] expectedArray)
+        public void AddBack_WhenValueAdded_ShouldReturnNewArrayWithValueInBack(int[] sourceArray, int valueToAdd, int[] expectedArray)
         {
-            MyArrayList<T> myArrayList = new MyArrayList<T>(sourceArray);
+            var myArrayList = CreateList(sourceArray);
 
             myArrayList.AddBack(valueToAdd);
 
@@ -26,7 +38,7 @@ namespace DataStructures.Tests
         [TestCase(new[] { 1, 2, 3, 4, 5 }, -123, new[] { 1, 2, 3, 4, 5, -123, -123 })]
         public void AddBack_WhenValueAdded_ShouldReturnNewArrayWithValueInBack2(int[] sourceArray, int valueToAdd, int[] expectedArray)
         {
-            var myArrayList = new MyArrayList(sourceArray);
+            var myArrayList = CreateList(sourceArray);
 
             myArrayList.AddBack(valueToAdd);
             myArrayList.AddBack(valueToAdd);
@@ -40,7 +52,7 @@ namespace DataStructures.Tests
         [TestCase(new[] { 1, 2, 3, 4, 5 }, -231, new[] { -231, 1, 2, 3, 4, 5 })]
         public void AddFront_WhenValueAdded_ShouldReturnNewArrayWithValueInFront(int[] sourceArray, int valueToAdd, int[] expectedArray)
         {
-            var myArrayList = new MyArrayList(sourceArray);
+            var myArrayList = CreateList(sourceArray);
 
             myArrayList.AddFront(valueToAdd);
 
@@ -53,7 +65,7 @@ namespace DataStructures.Tests
         [TestCase(new[] { 1, 2, 3, 4, 5 }, -456, new[] { -456, -456, 1, 2, 3, 4, 5 })]
         public void AddFront_WhenValueAdded_ShouldReturnNewArrayWithValueInFront2(int[] sourceArray, int valueToAdd, int[] expectedArray)
         {
-            var myArrayList = new MyArrayList(sourceArray);
+            var myArrayList = CreateList(sourceArray);
 
             myArrayList.AddFront(valueToAdd);
             myArrayList.AddFront(valueToAdd);
@@ -68,7 +80,7 @@ namespace DataStructures.Tests
         [TestCase(new int[0], 0, 12, new[] { 12 })]
         public void AddByIndex_WhenValueAdded_ShouldReturnNewArrayWithValueOnIndex(int[] sourceArray, int index, int valueToAdd, int[] expectedArray)
         {
-            var myArrayList = new MyArrayList(sourceArray);
+            var myArrayList = CreateList(sourceArray);
 
             myArrayList.AddByIndex(index, valueToAdd);
 
@@ -82,7 +94,7 @@ namespace DataStructures.Tests
         [TestCase(new[] { 0 }, new int[0])]
         public void RemoveBack_WhenBackDeleted_ShouldReturnArrayWithoutLastNumber(int[] sourceArray, int[] expectedArray)
         {
-            var myArrayList = new MyArrayList(sourceArray);
+            var myArrayList = CreateList(sourceArray);
 
             myArrayList.RemoveBack();
 
@@ -96,7 +108,7 @@ namespace DataStructures.Tests
         [TestCase(new[] { 0 }, 0)]
         public void RemoveBack_WhenBackDeleted_ShouldReturnDeletedNumber(int[] sourceArray, int deletedNumber)
         {
-            var myArrayList = new MyArrayList(sourceArray);
+            var myArrayList = CreateList(sourceArray);
 
             Assert.AreEqual(deletedNumber, myArrayList.RemoveBack());
         }
@@ -108,7 +120,7 @@ namespace DataStructures.Tests
         [TestCase(new[] { 0 }, new int[0])]
         public void RemoveFront_WhenFrontDeleted_ShouldReturnArrayWithoutFirstNumber(int[] sourceArray, int[] expectedArray)
         {
-            var myArrayList = new MyArrayList(sourceArray);
+            var myArrayList = CreateList(sourceArray);
 
             myArrayList.RemoveFront();
 
@@ -122,7 +134,7 @@ namespace DataStructures.Tests
         [TestCase(new[] { 0 }, 0)]
         public void RemoveFront_WhenFrontDeleted_ShouldReturnDeletedNumber(int[] sourceArray, int deletedNumber)
         {
-            var myArrayList = new MyArrayList(sourceArray);
+            var myArrayList = CreateList(sourceArray);
 
             Assert.AreEqual(deletedNumber, myArrayList.RemoveFront());
         }
@@ -133,7 +145,7 @@ namespace DataStructures.Tests
         [TestCase(new[] { 0, 222, 331, 412, 5 }, 1, new[] { 0, 331, 412, 5 })]
         public void RemoveByIndex_WhenIndexDeleted_ShouldReturnArrayWithoutIndexNumber(int[] sourceArray, int index, int[] expectedArray)
         {
-            var myArrayList = new MyArrayList(sourceArray);
+            var myArrayList = CreateList(sourceArray);
 
             myArrayList.RemoveByIndex(index);
 
@@ -146,7 +158,7 @@ namespace DataStructures.Tests
         [TestCase(new[] { 0, 222, 331, 412, 5 }, 1, 222)]
         public void RemoveByIndex_WhenIndexDeleted_ShouldReturnDeletedNumber(int[] sourceArray, int index, int deletedNumber)
         {
-            var myArrayList = new MyArrayList(sourceArray);
+            var myArrayList = CreateList(sourceArray);
 
             Assert.AreEqual(deletedNumber, myArrayList.RemoveByIndex(index));
         }
@@ -159,7 +171,7 @@ namespace DataStructures.Tests
         [TestCase(new[] { 1, 2, 3, 4, 5 }, 5, new int[0])]
         public void RemoveBackNValues_WhenNValuesIBackDeleted_ShouldReturnArrayWithoutLastNNumbers(int[] sourceArray, int n, int[] expectedArray)
         {
-            var myArrayList = new MyArrayList(sourceArray);
+            var myArrayList = CreateList(sourceArray);
 
             myArrayList.RemoveNValuesBack(n);
 
@@ -174,7 +186,7 @@ namespace DataStructures.Tests
         [TestCase(new[] { 1, 2, 3, 4, 5 }, 5, new[] { 1, 2, 3, 4, 5 })]
         public void RemoveBackNValues_WhenNValuesInBackDeleted_ShouldReturnArrayDeletedNumbers(int[] sourceArray, int n, int[] deletedNumber)
         {
-            var myArrayList = new MyArrayList(sourceArray);
+            var myArrayList = CreateList(sourceArray);
 
             Assert.AreEqual(deletedNumber, myArrayList.RemoveNValuesBack(n));
         }
@@ -187,7 +199,7 @@ namespace DataStructures.Tests
         [TestCase(new[] { 1, 2, 3, 4, 5 }, 5, new int[0])]
         public void RemoveFrontNValues_WhenNValuesInFrontDeleted_ShouldReturnArrayWithoutFirstNNumbers(int[] sourceArray, int n, int[] expectedArray)
         {
-            var myArrayList = new MyArrayList(sourceArray);
+            var myArrayList = CreateList(sourceArray);
 
             myArrayList.RemoveNValuesFront(n);
 
@@ -202,7 +214,7 @@ namespace DataStructures.Tests
         [TestCase(new[] { 1, 2, 3, 4, 5 }, 5, new[] { 1, 2, 3, 4, 5 })]
         public void RemoveFrontNValues_WhenNValuesInFrontDeleted_ShouldReturnDeletedNumbers(int[] sourceArray, int n, int[] deletedNumber)
         {
-            var myArrayList = new MyArrayList(sourceArray);
+            var myArrayList = CreateList(sourceArray);
 
             Assert.AreEqual(deletedNumber, myArrayList.RemoveNValuesFront(n));
         }
@@ -215,7 +227,7 @@ namespace DataStructures.Tests
         [TestCase(new[] { 1, 2, 3, 4, 5 }, 0, 5, new int[0])]
         public void RemoveByIndexNValues_WhenNValuesByIndexDeleted_ShouldReturnArrayWithoutIndexNNumbers(int[] sourceArray, int index, int n, int[] expectedArray)
         {
-            var myArrayList = new MyArrayList(sourceArray);
+            var myArrayList = CreateList(sourceArray);
 
             myArrayList.RemoveNValuesByIndex(index, n);
 
@@ -230,7 +242,7 @@ namespace DataStructures.Tests
         [TestCase(new[] { 1, 2, 3, 4, 5 }, 0, 5, new[] { 1, 2, 3, 4, 5 })]
         public void RemoveByIndexNValues_WhenNValuesByIndexDeleted_ShouldReturnDeletedNumbers(int[] sourceArray, int index, int n, int[] deletedNumber)
         {
-            var myArrayList = new MyArrayList(sourceArray);
+            var myArrayList = CreateList(sourceArray);
 
             Assert.AreEqual(deletedNumber, myArrayList.RemoveNValuesByIndex(index, n));
         }
@@ -243,7 +255,7 @@ namespace DataStructures.Tests
         [TestCase(new[] { 1, 2, -55, 4, 5 }, 1, 0)]
         public void IndexOf_WhenFoundElementIndex_ShouldReturnIndexOfElement(int[] sourceArray, int element, int expectedIndex)
         {
-            var myArrayList = new MyArrayList(sourceArray);
+            var myArrayList = CreateList(sourceArray);
 
             myArrayList.IndexOf(element);
 
@@ -257,7 +269,7 @@ namespace DataStructures.Tests
         [TestCase(new[] { 24, 43, -666, 123, -323, 222 }, new[] { 222, -323, 123, -666, 43, 24 })]
         public void Reverse_WhenReverseArray_ShouldReturnRevesedArray(int[] sourceArray, int[] expectedArray)
         {
-            var myArrayList = new MyArrayList(sourceArray);
+            var myArrayList = CreateList(sourceArray);
 
             myArrayList.Reverse();
 
@@ -271,7 +283,7 @@ namespace DataStructures.Tests
         [TestCase(new[] { 10, -20, -321, -100, -10 }, 10)]
         public void Max_WhenFoundMaxElementOfArray_ShouldReturnMaxElementOfArray(int[] sourceArray, int expectedElement)
         {
-            var myArrayList = new MyArrayList(sourceArray);
+            var myArrayList = CreateList(sourceArray);
 
             myArrayList.Max();
 
@@ -286,7 +298,7 @@ namespace DataStructures.Tests
         [TestCase(new[] { 2, 40, 132, 123, 0 }, 0)]
         public void Min_WhenFoundMinElementOfArray_ShouldReturnMinElementOfArray(int[] sourceArray, int expectedElement)
         {
-            var myArrayList = new MyArrayList(sourceArray);
+            var myArrayList = CreateList(sourceArray);
 
             myArrayList.Min();
 
@@ -300,7 +312,7 @@ namespace DataStructures.Tests
         [TestCase(new[] { 10, -20, -321, -100, -10 }, 0)]
         public void MaxIndex_WhenFoundMaxElementOfArrayIndex_ShouldReturnMaxElementOfArrayIndex(int[] sourceArray, int expectedIndex)
         {
-            var myArrayList = new MyArrayList(sourceArray);
+            var myArrayList = CreateList(sourceArray);
 
             myArrayList.MaxIndex();
 
@@ -316,7 +328,7 @@ namespace DataStructures.Tests
         [TestCase(new[] { 2, 40, 132, 123, 1 }, 4)]
         public void MinIndex_WhenFoundMinElementOfArrayIndex_ShouldReturnMinElementOfArrayIndex(int[] sourceArray, int expectedIndex)
         {
-            var myArrayList = new MyArrayList(sourceArray);
+            var myArrayList = CreateList(sourceArray);
 
             myArrayList.MinIndex();
 
@@ -329,7 +341,7 @@ namespace DataStructures.Tests
         [TestCase(new[] { 0, 0, 0, 2, 1 }, new[] { 0, 0, 0, 1, 2 })]
         public void SortAscending_WhenArrayIn_ShouldReturnSortedInAscendingOrder(int[] sourceArray, int[] expectedArray)
         {
-            var myArrayList = new MyArrayList(sourceArray);
+            var myArrayList = CreateList(sourceArray);
 
             myArrayList.Sort(true);
 
@@ -342,7 +354,7 @@ namespace DataStructures.Tests
         [TestCase(new[] { 0, 0, 0, 2, 1 }, new[] { 2, 1, 0, 0, 0 })]
         public void SortDescending_WhenArrayIn_ShouldReturnSortedInDescendingOrder(int[] sourceArray, int[] expectedArray)
         {
-            var myArrayList = new MyArrayList(sourceArray);
+            var myArrayList = CreateList(sourceArray);
 
             myArrayList.Sort(false);
 
@@ -355,7 +367,7 @@ namespace DataStructures.Tests
         [TestCase(new[] { -1, 2 }, -12, new[] { -1, 2 })]
         public void RemoveByValue_WhenValueRemoved_ShouldReturnArrayWithoutValue(int[] sourceArray, int value, int[] expectedArray)
         {
-            var myArrayList = new MyArrayList(sourceArray);
+            var myArrayList = CreateList(sourceArray);
 
             myArrayList.RemoveByValue(value);
 
@@ -368,7 +380,7 @@ namespace DataStructures.Tests
         [TestCase(new[] { -1, 2 }, -12, -1)]
         public void RemoveByValue_WhenValueRemoved_ShouldReturnIndexOfValue(int[] sourceArray, int value, int indexOfElement)
         {
-            var myArrayList = new MyArrayList(sourceArray);
+            var myArrayList = CreateList(sourceArray);
 
             Assert.AreEqual(indexOfElement, myArrayList.RemoveByValue(value));
         }
@@ -379,7 +391,7 @@ namespace DataStructures.Tests
         [TestCase(new[] { -1, 2 }, -12, new[] { -1, 2 })]
         public void RemoveByValueAll_WhenValueRemoved_ShouldReturnArrayWithoutValue(int[] sourceArray, int value, int[] expectedArray)
         {
-            var myArrayList = new MyArrayList(sourceArray);
+            var myArrayList = CreateList(sourceArray);
 
             myArrayList.RemoveByValueAll(value);
 
@@ -392,7 +404,7 @@ namespace DataStructures.Tests
         [TestCase(new[] { -1, 2 }, -12, -1)]
         public void RemoveByValueAll_WhenAllValueRemoved_ShouldReturnNumberOfValues(int[] sourceArray, int value, int countOfElments)
         {
-            var myArrayList = new MyArrayList(sourceArray);
+            var myArrayList = CreateList(sourceArray);
 
             Assert.AreEqual(countOfElments, myArrayList.RemoveByValueAll(value));
         }
@@ -405,7 +417,7 @@ namespace DataStructures.Tests
         [TestCase(new[] { -121, 123 }, new[] { 222 }, new[] { 222, -121, 123 })]
         public void AddFrontIEnumarble_WhenAdded_ShouldReturnArrayWithAllNumbers(int[] sourceArray, int [] items, int [] expectedArray)
         {
-            var myArrayList = new MyArrayList(sourceArray);
+            var myArrayList = CreateList(sourceArray);
 
             myArrayList.AddFront(items);
 
@@ -420,7 +432,7 @@ namespace DataStructures.Tests
         [TestCase(new[] { -121, 123 }, new[] { -222 }, new[] { -121, 123, -222 })]
         public void AddBackIEnumarble_WhenAdded_ShouldReturnArrayWithAllNumbers(int[] sourceArray, int[] items, int[] expectedArray)
         {
-            var myArrayList = new MyArrayList(sourceArray);
+            var myArrayList = CreateList(sourceArray);
 
             myArrayList.AddBack(items);
 
@@ -435,7 +447,7 @@ namespace DataStructures.Tests
         [TestCase(new[] { -121, 123 }, 1, new[] { -222 }, new[] { -121, -222, 123 })]
         public void AddByIndexIEnumarble_WhenAdded_ShouldReturnArrayWithAllNumbers(int[] sourceArray, int index, int[] items, int[] expectedArray)
         {
-            var myArrayList = new MyArrayList(sourceArray);
+            var myArrayList = CreateList(sourceArray);
 
             myArrayList.AddByIndex(index, items);
 
@@ -450,7 +462,7 @@ namespace DataStructures.Tests
         public void IndexerGet_WhenValidIndexAndArrayFilled_ShouldReturnValueByIndex
             (int[] sourceArray, int index, int expected)
         {
-            IMyList myList = new MyArrayList(sourceArray);
+            var myList = CreateList(sourceArray);
 
             int actual = myList[index];
 
@@ -461,7 +473,7 @@ namespace DataStructures.Tests
         public void IndexerGet_WhenEmptyArray_ShouldThrowIndexOutOfRange
             (int[] sourceArray)
         {
-            IMyList myList = new MyArrayList(sourceArray);
+            var myList = CreateList(sourceArray);
 
             Assert.Throws<IndexOutOfRangeException>(() =>
             {
@@ -474,9 +486,9 @@ namespace DataStructures.Tests
         [TestCase(new[] { 1, 6, 3, 4, 1 }, 5)]
         [TestCase(new[] { 1, 6, 3, 4, 1 }, -10)]
         public void IndexerGet_WhenInvalidIndex_ShouldThrowIndexOutOfRange
-            (T[] sourceArray, int index)
+            (int[] sourceArray, int index)
         {
-            IMyList myList = new MyArrayList(sourceArray);
+            var myList = CreateList(sourceArray);
 
             Assert.Throws<IndexOutOfRangeException>(() =>
             {
@@ -489,7 +501,7 @@ namespace DataStructures.Tests
         {
             Assert.Throws<ArgumentException>(() =>
             {
-                IMyList myList = new MyArrayList(null);
+                var myList = CreateList(null);
             });
         }
 

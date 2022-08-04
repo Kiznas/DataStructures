@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace DataStructuresLibrary
 {
-    public class MyArrayList<T> where T : IMyList, IComparable<T>
+    public class MyArrayList<T> : IMyList<T> where T : IComparable<T>
     {
         private const int DefaultSize = 4;
         private const double Coef = 1.5;
@@ -272,9 +272,9 @@ namespace DataStructuresLibrary
                 {
                     int minIndex = i;
 
-                    for (int j = i + 1; j < _count; j++)
+                    for (int j = i; j < _count; j++)
                     {
-                        if (_array[i].CompareTo(_array[minIndex]) == -1)
+                        if (_array[j].CompareTo(_array[minIndex]) == -1)
                         {
                             minIndex = j;
                         }
@@ -294,7 +294,7 @@ namespace DataStructuresLibrary
 
                     for (int j = i + 1; j < _count; j++)
                     {
-                        if (_array[i].CompareTo(_array[maxIndex]) == 1)
+                        if (_array[j].CompareTo(_array[maxIndex]) == 1)
                         {
                             maxIndex = j;
                         }
@@ -392,6 +392,8 @@ namespace DataStructuresLibrary
 
         public void AddByIndex(int index, IEnumerable<T> items)
         {
+            //int localCount = items.Count<>
+
             int localCount = 0;
 
             foreach (T item in items)
@@ -439,9 +441,9 @@ namespace DataStructuresLibrary
             }
         }
 
-        //IEnumerator IEnumerable.GetEnumerator()
-        //{
-        //    return GetEnumerator();
-        //}
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
     }
 }
